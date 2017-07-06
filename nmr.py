@@ -51,13 +51,13 @@ class GUI():
         ms  = self.optionmenus       = {}
         
         fs ["machine"]               = _add_frame(dict(master=self.root, text="Machine", **sunken), gk('000055news'))
-        ls ["frequency"]             = _add_label(fs["machine"], {"text": "Operating Frequency:"}, gk('00w'))
+        ls ["frequency"]             = _add_label(fs["machine"], {"text": "Operating Frequency (MHz):"}, gk('00w'))
         mes["machine_frequency_mhz"] = _add_entry(fs["machine"], "", {}, gk('010300'))
         ls ["noise"]                 = _add_label(fs["machine"], {"text": "Noise:"}, gk('10w'))
         mes["noise"]                 = _add_entry(fs["machine"], "", {}, gk('110300'))
-        ls ["resolution"]            = _add_label(fs["machine"], {"text": "Resolution:"}, gk('20w'))
+        ls ["resolution"]            = _add_label(fs["machine"], {"text": "Resolution (ppm):"}, gk('20w'))
         mes["resolution"]            = _add_entry(fs["machine"], "", {}, gk('210300'))
-        ls ["min_x"]                 = _add_label(fs["machine"], {"text": "Range:"}, gk('30w'))
+        ls ["min_x"]                 = _add_label(fs["machine"], {"text": "Range (ppm):"}, gk('30w'))
         mes["min_x"]                 = _add_entry(fs["machine"], "", {}, gk('31w'), {"width": 3})
         ls ["max_x"]                 = _add_label(fs["machine"], {"text": "to:"}, gk('32w'))
         mes["max_x"]                 = _add_entry(fs["machine"], "", {}, gk('33w'), {"width": 3})
@@ -68,11 +68,11 @@ class GUI():
         ls["peaks"]            = _add_label(fs["peaks"], {"text": "Peaks:"}, gk('10w'))
         ms["peaks"], self.peak_string = _add_optionmenu(fs["peaks"], " ", [" "], {"command": self._update_peak_om}, gk('1103ew'), {"width": 10})
         
-        ls ["shift"]    = _add_label(fs["peaks"], {"text": "Shift:"}, gk('20w'))
+        ls ["shift"]    = _add_label(fs["peaks"], {"text": "Shift (ppm):"}, gk('20w'))
         pes["shift"]    = _add_entry(fs["peaks"], "", {}, gk('21w'), attach_func=self._set_peak_string)
         ls ["p_nuclei"] = _add_label(fs["peaks"], {"text": "Nuclei:"}, gk('22w'))
         pes["nuclei"]   = _add_entry(fs["peaks"], "", {}, gk('23w'), attach_func=self._set_peak_string)
-        ls ["hwhm"]     = _add_label(fs["peaks"], {"text": "Half Width Half Maximum:"}, gk('3003w'))
+        ls ["hwhm"]     = _add_label(fs["peaks"], {"text": "Half Width Half Maximum (ppm):"}, gk('3003w'))
         pes["hwhm"]     = _add_entry(fs["peaks"], "", {}, gk('33w'), attach_func=self._set_peak_string)
         
         fs["splittings"]       = _add_frame(dict(master=fs["peaks"], text="Splitting Nuclei", **sunken), gk('400455news'))
@@ -81,7 +81,7 @@ class GUI():
         ls["splittings"]       = _add_label(fs["splittings"], {"text": "Splittings:"}, gk('10w'))
         ms["splittings"], self.splitting_string = _add_optionmenu(fs["splittings"], " ", [" "], {}, gk('1103ew'), {"width": 10})
         
-        ls ["coupling"]     = _add_label(fs["splittings"], {"text": "J Coupling:"}, gk('20w'))
+        ls ["coupling"]     = _add_label(fs["splittings"], {"text": "J Coupling (Hz):"}, gk('20w'))
         ses["coupling"]     = _add_entry(fs["splittings"], "", {}, gk('21w'), attach_func=self._set_splitting_string)
         ls ["s_nuclei"]     = _add_label(fs["splittings"], {"text": "Nuclei:"}, gk('22w'))
         ses["nuclei"]       = _add_entry(fs["splittings"], "", {}, gk('23w'), attach_func=self._set_splitting_string)
@@ -733,23 +733,22 @@ class LoadGaussianPopup(object):
                 ell.append(element)
                 
         
-        self.element_label = _add_label(self.root, {"text": "Select Element:"}, gk('00'))
+        self.element_label = _add_label(self.root, {"text": "Select Element:"}, gk('00w'))
         self.elements_om, self.element = _add_optionmenu(self.root, 'H' if 'H' in ell else ell[0], ell, {}, gk('01ew'))
         
-        self.reference_label = _add_label(self.root, {"text": "Reference Shift:"}, gk('10'))
-        self.reference_entry = _add_entry(self.root, "", {}, gk('11'))
+        self.reference_label = _add_label(self.root, {"text": "Reference Shift (ppm):"}, gk('10w'))
+        self.reference_entry = _add_entry(self.root, "", {}, gk('11w'))
         
-        self.degeneracy_label = _add_label(self.root, {"text": "Degeneracy Threshold:"}, gk('20'))
-        self.degeneracy_entry = _add_entry(self.root, "1", {}, gk('21'))
+        self.degeneracy_label = _add_label(self.root, {"text": "Degeneracy Threshold (Hz):"}, gk('20w'))
+        self.degeneracy_entry = _add_entry(self.root, "1", {}, gk('21w'))
         
-        self.decouple_label = _add_label(self.root, {"text": "Decouple Elements?"}, gk('30'))
+        self.decouple_label = _add_label(self.root, {"text": "Decouple Elements?"}, gk('30w'))
         self.decouple       = tk.BooleanVar(value=True)
         _add_checkbutton(self.root, True, {}, gk('31'), variable=self.decouple)
         
-        self.go_button = _add_button(self.root, {"text": "Go"}, gk('40'), {"<Button-1>": self.go})
+        self.go_button = _add_button(self.root, {"text": "Go"}, gk('40ew'), {"<Button-1>": self.go})
         
         self.root.protocol("WM_DELETE_WINDOW", self._cl)
-        #self.root.mainloop()
 
     def _cl(self, *args):
         self.root.destroy()
