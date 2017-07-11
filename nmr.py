@@ -133,6 +133,7 @@ class GUI():
         except (IndexError, AttributeError):
             splitting = None
             
+        self.splittings = self.peak.splittings
         self._set_splitting(splitting)
 
     def _set_peak_string(self, *args):
@@ -216,10 +217,17 @@ class GUI():
         
     def remove_splitting(self, *args):
         
-        splitting = self.splitting
+        s0 = self.splitting
         
-        self.peak.splittings.remove(splitting)
-        self.splittings.remove(splitting)
+        for i, s1 in enumerate(self.peak.splittings):
+            if s0 == s1:
+                del self.peak.splittings[i]
+                break
+            
+        for i, s1 in enumerate(self.splittings):
+            if s0 == s1:
+                del self.peak.splittings[i]
+                break
         
         try:
             splitting = self.splittings[0]
@@ -237,8 +245,6 @@ class GUI():
             for key, entry in self.splitting_entries.items():
                 entry.configure(textvariable=tk.StringVar(value=""), state=tk.DISABLED)
             
-            
-
     def _ask_spin_abundance(self, element):
         
         while True:
@@ -517,6 +523,15 @@ class Splitting():
             float(self.coupling.get()),
             float(self.abundance.get())
         )
+        
+    def __eq__(self, other):
+        if isinstance(other, Splitting):
+            for a in ["spin", "nuclei", "coupling", "abundance"]:
+                if getattr(self, a).get() != getattr(other, a).get():
+                    return False
+            return True
+        else:
+            return False
 
 class NMRParser():
     def __init__(self):
