@@ -13,11 +13,11 @@ import sys
 if sys.version_info[0] == 3:
     import tkinter as tk
     import tkinter.messagebox as msgbox
-    from tkinter.filedialog import askopenfilename
+    from tkinter.filedialog import askopenfilename, asksaveasfilename
 else:
     import Tkinter as tk
     import tkMessageBox as msgbox
-    from tkFileDialog import askopenfilename
+    from tkFileDialog import askopenfilename, asksaveasfilename
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 from matplotlib import pyplot as plt
@@ -93,6 +93,7 @@ class GUI():
         fs["controls"] = _add_frame(dict(master=self.root, text="Controls", **sunken), gk('200055news'))
         bs["update"]   = _add_button(fs["controls"], {"text": "Update"}, gk('000055ew') ,{"<Button-1>": self.update})
         bs["parse"]    = _add_button(fs["controls"], {"text": "From .log"}, gk('010055ew') ,{"<Button-1>": self.parse})
+        bs["export"]   = _add_button(fs["controls"], {"text": "Export Data"}, gk('020055ew') ,{"<Button-1>": self.export})
         
         fs["plot"]  = _add_frame(dict(master=self.root, text="Plot", **sunken), gk('012055news'))
         cs["plot"]  = _add_mpl_canvas(fs["plot"], self.figure, gk('00'))
@@ -288,7 +289,7 @@ class GUI():
         self.ax.invert_xaxis()
         self.figure.tight_layout()
         self.canvases["plot"].draw()
-        
+            
     def parse(self, *args):
         
         fn = askopenfilename(filetypes = (("Gaussian Log File", "*.log"), ("All Files", "*.*")))
@@ -337,6 +338,22 @@ class GUI():
             
             msgbox.showerror("Error", "Could not load Gaussian .log File")
             raise 
+
+    def export(self, *args):
+        
+        try:
+            line = self.ax.lines[0]
+        except IndexError:
+            msgbox.showerror("No Data", "No data to export!")
+            return
+            
+        data = line.get_xydata()
+        
+        fn = asksaveasfilename(filetypes = [("CSV Files", "*.csv")])
+        
+        with open(fn, "w") as f:
+            for row in data:
+                f.write("{},{}\n".format(*row))
 
 class NMR():
 
